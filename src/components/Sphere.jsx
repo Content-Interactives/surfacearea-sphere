@@ -809,7 +809,41 @@ const Sphere = () => {
 
   return (
     <div className="bg-gray-100 p-8 min-h-screen">
-      <Card className="w-full max-w-2xl mx-auto shadow-md bg-white">
+      <Card className="w-full max-w-2xl mx-auto shadow-md bg-white" style={{ position: 'relative' }}>
+        {/* Flexi Wave overlay in top right corner */}
+        <div style={{ 
+          position: 'absolute', 
+          top: '25px', 
+          right: '30px', 
+          zIndex: 10,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px'
+        }}>
+          {/* Message box */}
+          <div style={{
+            background: 'white',
+            border: '2px solid #E5E7EB',
+            borderRadius: '16px',
+            padding: '12px 16px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            fontSize: '0.9rem',
+            color: '#333',
+            maxWidth: 200,
+            fontWeight: '500'
+          }}>
+            Ready to calculate? Let's find that surface area!
+          </div>
+          {/* Flexi image */}
+          <img 
+            src={import.meta.env.BASE_URL + 'Flexi_Wave (1).png'} 
+            alt="Flexi waving" 
+            style={{ 
+              width: 120, 
+              height: 'auto'
+            }} 
+          />
+        </div>
         <div style={{ padding: '24px 24px 0 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: '1.75rem', fontWeight: 'normal' }}>Surface Area: Sphere</span>
