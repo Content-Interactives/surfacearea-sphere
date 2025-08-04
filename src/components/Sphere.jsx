@@ -78,6 +78,16 @@ const Sphere = () => {
   const [focusedCalcBlock, setFocusedCalcBlock] = useState(null); // 'bottom' | 'top' | null
   const [focusedStep3, setFocusedStep3] = useState(false);
   const [answerShown, setAnswerShown] = useState(false);
+  // Responsive helper: detect mobile screens
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 640 : false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const shapeLibrary = [
     { id: 'circle', name: 'Circle', svg: '○', formula: 'πr²' },
@@ -229,11 +239,11 @@ const Sphere = () => {
     }
 
     setCalculation({
-      step1: step1.toFixed(4),
-      step1Approx: (shape === 'sphere' ? 4 * 3.14 : shape === 'cylinder' ? 2 * 3.14 : 2 * 3.14).toFixed(4),
-      step2: step2.toFixed(4),
-      result: result.toFixed(4),
-      resultApprox: (shape === 'sphere' ? 4 * 3.14 * step2 : shape === 'cylinder' ? (2 * 3.14 * radius * radius) + (2 * 3.14 * radius * height) : 2 * 3.14 * step2).toFixed(4)
+      step1: step1.toFixed(1),
+      step1Approx: (shape === 'sphere' ? 4 * 3.14 : shape === 'cylinder' ? 2 * 3.14 : 2 * 3.14).toFixed(1),
+      step2: step2.toFixed(1),
+      result: result.toFixed(1),
+      resultApprox: (shape === 'sphere' ? 4 * 3.14 * step2 : shape === 'cylinder' ? (2 * 3.14 * radius * radius) + (2 * 3.14 * radius * height) : 2 * 3.14 * step2).toFixed(1)
     });
     setCalculatedRadius(radius);
     setCurrentStepIndex(0);
@@ -286,14 +296,20 @@ const Sphere = () => {
     setCalculationStep(0);
   };
 
-  const sphereSize = (radius - minRadius + 1) * scaleFactor;
+  const baseSphereSize = (radius - minRadius + 1) * scaleFactor;
+  const sphereSize = isMobile ? baseSphereSize * 0.6 : baseSphereSize;
 
   const renderShape = () => {
     const extraSpace = radius <= 2 ? 1.5 : 0;
     const maxTranslation = radius === 10 ? 0.7 : (radius >= 8.5 ? 0.75 : 1);
     const cubeTranslation = radius >= 7 ? 0.5 : 1;
     const cubeScaleFactor = radius >= 7 ? 15 : 25;
-    const translation = calculation ? `-${(sphereSize * (shape === 'cube' ? cubeTranslation : Math.min(1 + radius/10 + extraSpace, maxTranslation)))}px` : '0px';
+    let translationValue = sphereSize * (shape === 'cube' ? cubeTranslation : Math.min(1 + radius/10 + extraSpace, maxTranslation));
+    if (isMobile) {
+      // Disable translation on mobile to keep sphere within the card
+      translationValue = 0;
+    }
+    const translation = calculation ? `-${translationValue}px` : '0px';
     if (shape === 'sphere') {
       return (
         <div className="relative flex items-center justify-center w-full h-64">
@@ -430,7 +446,11 @@ const Sphere = () => {
       // Add translation animation like other shapes
       const extraSpace = radius <= 2 ? 1.5 : 0;
       const maxTranslation = radius === 10 ? 0.7 : (radius >= 8.5 ? 0.75 : 1);
-      const translation = calculation ? `-${(prismLength * Math.min(1 + radius/10 + extraSpace, maxTranslation))}px` : '0px';
+      let prismTranslationValue = prismLength * Math.min(1 + radius/10 + extraSpace, maxTranslation);
+      if (isMobile) {
+        prismTranslationValue = 0;
+      }
+      const translation = calculation ? `-${prismTranslationValue}px` : '0px';
       return (
         <div className="relative flex items-center justify-center w-full h-64">
           <svg width={svgWidth} height={svgHeight} viewBox={`0 0 ${svgWidth} ${svgHeight}`} style={{ overflow: 'visible', transform: `translateX(${translation})` }} className="sphere-container transition-all duration-500">
@@ -813,8 +833,8 @@ const Sphere = () => {
         {/* Flexi Wave overlay in top right corner */}
         <div style={{ 
           position: 'absolute', 
-          top: '25px', 
-          right: '30px', 
+          bottom: isMobile ? '100px' : '20px', 
+          right: isMobile ? '10px' : '20px', 
           zIndex: 10,
           display: 'flex',
           alignItems: 'center',
@@ -822,26 +842,26 @@ const Sphere = () => {
         }}>
           {/* Message box */}
           <div style={{
-            background: 'white',
-            border: '2px solid #E5E7EB',
-            borderRadius: '16px',
-            padding: '12px 16px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            fontSize: '0.9rem',
-            color: '#333',
-            maxWidth: 200,
-            fontWeight: '500'
-          }}>
+             background: 'white',
+             border: '2px solid #E5E7EB',
+             borderRadius: '16px',
+             padding: '8px 12px',
+             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+             fontSize: '0.8rem',
+             color: '#333',
+             maxWidth: 160,
+             fontWeight: '500'
+           }}>
             Ready to calculate? Let's find that surface area!
           </div>
           {/* Flexi image */}
           <img 
-            src={import.meta.env.BASE_URL + 'Flexi_Wave (1).png'} 
-            alt="Flexi waving" 
-            style={{ 
-              width: 120, 
-              height: 'auto'
-            }} 
+             src={import.meta.env.BASE_URL + 'Flexi_Wave (1).png'} 
+             alt="Flexi waving" 
+             style={{ 
+               width: 90, 
+               height: 'auto'
+             }} 
           />
         </div>
         <div style={{ padding: '24px 24px 0 24px' }}>
@@ -1401,7 +1421,7 @@ const Sphere = () => {
             </div>
           )}
         </div>
-        <CardContent className="space-y-6 pt-4">
+        <CardContent className="space-y-6 pt-4" style={{paddingBottom: isMobile ? '200px' : undefined}}>
           <div className="space-y-4">
             {!isCustomShape && (
               <>
@@ -1445,14 +1465,27 @@ const Sphere = () => {
                     </div>
                   </>
                 )}
-                <div className="h-64 flex items-center justify-center overflow-hidden relative">
-                  {renderShape()}
+                <div className={isMobile ? 'flex overflow-x-auto' : 'h-64 flex items-center justify-center overflow-hidden relative'} style={isMobile ? {scrollSnapType:'x mandatory'}:{}}>
+                  {/* Sphere view */}
+                  {isMobile ? (
+                    <div style={{minWidth:'100%', scrollSnapAlign:'start', display:'flex', justifyContent:'center'}}>
+                      {renderShape()}
+                    </div>
+                  ) : (
+                    renderShape()
+                  )}
+                  {/* Calculation view */}
                   {calculation && (
-                    <div className="absolute" style={{ 
-                      left: shape === 'cylinder' ? '280px' : '350px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: '650px'
+                    <div className={isMobile ? '' : 'absolute'} style={{ 
+                      left: isMobile ? '0' : (shape === 'cylinder' ? '280px' : '350px'),
+                      top: isMobile ? 'auto' : '50%',
+                      transform: isMobile ? 'none' : 'translateY(-50%)',
+                      width: isMobile ? '100%' : '650px',
+                      padding: isMobile ? '0 16px' : undefined,
+                      marginTop: isMobile ? '16px' : undefined,
+                      fontSize: isMobile ? '0.9rem' : undefined,
+                      minWidth: isMobile ? '100%' : undefined,
+                      scrollSnapAlign: isMobile ? 'start' : undefined
                     }}>
                       <div className="space-y-4">
                         {shape === 'sphere' && (
@@ -1462,7 +1495,7 @@ const Sphere = () => {
                               <p className="text-2xl font-normal text-black typing-animation" style={{ animationDelay: '2500ms', fontWeight: 400, fontFamily: 'inherit' }}>SA = 4π({radius.toFixed(1)})²</p>
                               <p className="text-2xl font-normal text-black typing-animation" style={{ animationDelay: '4000ms', fontWeight: 400, fontFamily: 'inherit' }}>SA = 4π({(radius * radius).toFixed(1)})</p>
                               <div className="typing-animation" style={{ animationDelay: '5500ms' }}>
-                                <p className="text-2xl font-normal text-black calculation-text" style={{ fontWeight: 400, fontFamily: 'inherit' }}>SA = {calculation.result}</p>
+                                <p className="text-2xl font-normal text-black calculation-text" style={{ fontWeight: 400, fontFamily: 'inherit' }}>SA ≈ {calculation.result}</p>
                                 <p className="text-2xl font-normal text-black calculation-text" style={{ fontWeight: 400, fontFamily: 'inherit' }}>square units</p>
                               </div>
                             </div>
@@ -1475,7 +1508,7 @@ const Sphere = () => {
                               <p className="text-2xl font-normal text-black typing-animation" style={{ animationDelay: '2500ms', fontWeight: 400, fontFamily: 'inherit' }}>SA = 2π({radius.toFixed(1)})² + 2π({radius.toFixed(1)} × {height.toFixed(1)})</p>
                               <p className="text-2xl font-normal text-black typing-animation" style={{ animationDelay: '4000ms', fontWeight: 400, fontFamily: 'inherit' }}>SA = 2π({(radius * radius).toFixed(1)}) + 2π({(radius * height).toFixed(1)})</p>
                               <div className="typing-animation" style={{ animationDelay: '5500ms' }}>
-                                <p className="text-2xl font-normal text-black calculation-text" style={{ fontWeight: 400, fontFamily: 'inherit' }}>SA = {calculation.result}</p>
+                                <p className="text-2xl font-normal text-black calculation-text" style={{ fontWeight: 400, fontFamily: 'inherit' }}>SA ≈ {calculation.result}</p>
                                 <p className="text-2xl font-normal text-black calculation-text" style={{ fontWeight: 400, fontFamily: 'inherit' }}>square units</p>
                               </div>
                             </div>
@@ -1531,11 +1564,14 @@ const Sphere = () => {
                   <button 
                     className="orbit-glow-btn" 
                     onClick={answerShown ? restart : calculateSurfaceArea}
+                    disabled={calculation && !answerShown}
                     style={{
-                      background: answerShown ? '#FF8C00' : '#008542'
+                      background: answerShown ? '#FF8C00' : '#008542',
+                      opacity: (calculation && !answerShown) ? 0.7 : 1,
+                      cursor: (calculation && !answerShown) ? 'not-allowed' : 'pointer'
                     }}
                   >
-                    {answerShown ? 'Restart' : 'Calculate Surface Area'}
+                    {answerShown ? 'Restart' : (calculation ? 'Calculating...' : 'Calculate Surface Area')}
                   </button>
                 </div>
               </>
