@@ -833,8 +833,8 @@ const Sphere = () => {
         {/* Flexi Wave overlay in top right corner */}
         <div style={{ 
           position: 'absolute', 
-          bottom: isMobile ? '100px' : '20px', 
-          right: isMobile ? '10px' : '20px', 
+          top: '5px', 
+          right: '10px', 
           zIndex: 10,
           display: 'flex',
           alignItems: 'center',
@@ -864,9 +864,18 @@ const Sphere = () => {
              }} 
           />
         </div>
-        <div style={{ padding: '24px 24px 0 24px' }}>
+        <div style={{ padding: window.innerWidth <= 500 ? '12px 24px 0 24px' : '24px 24px 0 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '1.75rem', fontWeight: 'normal' }}>Surface Area: Sphere</span>
+            <span style={{ 
+              fontSize: window.innerWidth <= 500 ? '1.5rem' : '1.75rem', 
+              fontWeight: 'normal',
+              display: 'flex',
+              flexDirection: window.innerWidth <= 500 ? 'column' : 'row',
+              lineHeight: window.innerWidth <= 500 ? '1.2' : 'inherit'
+            }}>
+              <span>Surface Area:</span>
+              <span style={{ marginLeft: window.innerWidth <= 500 ? '0' : '8px' }}>Sphere</span>
+            </span>
           </div>
           {/* Flexi mascot just below the header and above the 3D shape, only on calculations page */}
           {isCustomShape && dimensionsCompleted && showCalculations && (
@@ -1421,7 +1430,7 @@ const Sphere = () => {
             </div>
           )}
         </div>
-        <CardContent className="space-y-6 pt-4" style={{paddingBottom: isMobile ? '200px' : undefined}}>
+        <CardContent className={window.innerWidth <= 500 ? "space-y-4 pt-2" : "space-y-6 pt-4"} style={{paddingBottom: window.innerWidth <= 500 ? '0px' : (isMobile ? '200px' : undefined)}}>
           <div className="space-y-4">
             {!isCustomShape && (
               <>

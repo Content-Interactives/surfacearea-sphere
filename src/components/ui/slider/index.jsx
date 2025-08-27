@@ -79,14 +79,14 @@ const SliderPrimitive = {
   Range: React.forwardRef(({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("absolute h-full bg-slate-900", className)}
+      className={cn("absolute h-full bg-slate-600", className)}
       {...props}
     />
   )),
   Thumb: React.forwardRef(({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("block h-5 w-5 rounded-full border-2 border-slate-900 bg-white ring-offset-white transition-colors focus-visible:outline-none", className)}
+      className={cn("block h-5 w-5 rounded-full border-2 border-slate-600 bg-white ring-offset-white transition-colors focus-visible:outline-none", className)}
       {...props}
     />
   ))
@@ -114,10 +114,10 @@ const Slider = React.forwardRef(({ className, value, onValueChange, min = 0, max
       {...props}
     >
       <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-slate-100">
-        <SliderPrimitive.Range className="absolute h-full bg-slate-900" style={{ width: percentage }} />
+        <SliderPrimitive.Range className="absolute h-full bg-slate-600" style={{ width: percentage }} />
       </SliderPrimitive.Track>
       <SliderPrimitive.Thumb 
-        className="absolute block h-5 w-5 rounded-full border-2 border-slate-900 bg-white ring-offset-white transition-colors focus-visible:outline-none" 
+        className="absolute block h-5 w-5 rounded-full border-2 border-slate-600 bg-white ring-offset-white transition-colors focus-visible:outline-none" 
         style={{ left: percentage, transform: "translateX(-50%)" }}
       />
     </SliderPrimitive.Root>
