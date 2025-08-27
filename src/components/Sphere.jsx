@@ -833,7 +833,7 @@ const Sphere = () => {
         {/* Flexi Wave overlay in top right corner */}
         <div style={{ 
           position: 'absolute', 
-          top: '5px', 
+          top: window.innerWidth <= 500 ? '5px' : '15px', 
           right: '10px', 
           zIndex: 10,
           display: 'flex',
