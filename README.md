@@ -1,42 +1,63 @@
-# Surface Area of a Sphere Interactive
+# Surface area (sphere) interactive
 
-This repository contains the code for the **Surface Area of a Sphere Interactive**, designed to help students explore and understand the concept of calculating the surface area of a sphere using engaging visuals and instant feedback.
+Vite-built React app with a **React Three Fiber** / **Three.js** scene for sphere surface-area exploration, plus UI (sliders, cards, inputs, draggable calculator) implemented mostly in `src/components/Sphere.jsx`. Curriculum and deployment links live in [Standards.md](Standards.md).
 
----
+**Live:** https://content-interactives.github.io/surfacearea-sphere
 
-## 🔗 Live Interactive
+**`package.json` `homepage`:** https://destinynguyen.github.io/surface-area/ — keep `vite.config.js` `base` and gh-pages target consistent with whichever GitHub Pages URL you ship.
 
-Try it out here:  
-👉 [https://content-interactives.github.io/surfacearea-sphere](https://content-interactives.github.io/surfacearea-sphere)
+## Requirements
 
----
+- Node.js 18+  
+- npm
 
-## 🌐 Where This Interactive Is Being Used
+## Commands
 
-This interactive is currently featured in the following locations:
+| Command | Purpose |
+|---------|---------|
+| `npm install` | Install dependencies |
+| `npm run dev` | Vite dev server (see `vite.config.js`: port `3001`, `host` `0.0.0.0`, `strictPort`, `open`) |
+| `npm run build` | Production bundle → `dist/` |
+| `npm run preview` | Serve `dist/` locally |
+| `npm run lint` | ESLint |
+| `npm run deploy` | `predeploy` runs `vite build`, then `gh-pages -d dist` |
 
-- <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/5d12571f-8e12-4441-98ab-c0bc94069a96" /> **CK-12 Intent Response**  
-  - 👉 PRODUCTION: [PENDING]  
-  - 👉 MASTER: [PENDING]
-- 📘 **CK-12 Flexbooks**  
-  - 👉 [PENDING: Book/lesson link where this interactive appears]
+## Stack
 
----
+| Layer | Packages |
+|--------|-----------|
+| Runtime | React 19 |
+| 3D | `three`, `@react-three/fiber`, `@react-three/drei` |
+| Styling | Tailwind CSS 3, PostCSS, Autoprefixer |
+| Icons | `lucide-react` |
+| Tooling | Vite 6, `@vitejs/plugin-react`, ESLint 9 |
 
-## 📚 Standards & Subjects
+Source is **JavaScript + JSX** (`.jsx`); TypeScript types are available for React via devDependencies.
 
-This interactive aligns with the following topics and standards:
+## Project layout
 
-- **📂 Subject Area**: High School Math (Geometry)  
-- **🧮 Topic**: Surface Area of a Sphere — Calculating the Surface Area of a Sphere  
-- **📏 Common Core**:  
-  - **CCSS.MATH.CONTENT.8.G.C.9** – Know the formulas for the volumes of cones, cylinders, and spheres and use them to solve real-world and mathematical problems.  
-  - **CCSS.MATH.CONTENT.8.G.C.11** – Apply the formulas for the volume and surface area of cones, cylinders, and spheres to solve real-world and mathematical problems.
+```
+index.html
+vite.config.js
+tailwind.config.js
+postcss.config.js
+src/
+  main.jsx          # React root
+  App.jsx           # Renders <Sphere />
+  index.css         # Global styles (incl. Tailwind)
+  components/
+    Sphere.jsx      # Main lesson UI + Canvas integration
+    sphere/
+      hooks/useCalculator.js   # Calculator state / drag behavior
+      components/Calculator.jsx
+    ui/             # alert, button, card, input, slider (patterned components)
+public/
+```
 
----
+## Vite
 
-## 🛠️ Developer Notes
+- `base: '/'` — for a project site under a subpath (e.g. `/surfacearea-sphere/`), set `base` to that path so asset URLs resolve on GitHub Pages.
 
-- Built with: React, Vite, Javascript, Tailwind CSS  
-- Deployed via: GitHub Pages  
-- See `index.html` and supporting assets in `src/` and `public/` folders
+## Embedding
+
+The experience is driven by a large single component (`Sphere.jsx`); check canvas size and layout there if you embed in an iframe or host inside a CMS shell.
